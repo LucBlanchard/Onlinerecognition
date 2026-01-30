@@ -17,12 +17,19 @@ else:
 
 # 3. Logique Camera avec WebRTC
 # webrtc_streamer remplace cv2.VideoCapture et la boucle while
+# Configuration standard pour éviter les blocages réseaux on utilise 3 sous-domaines pour la redondance
+rtc_configuration={
+    "iceServers": [
+        {"urls": ["stun:stun.l.google.com:19302"]},
+        {"urls": ["stun:stun1.l.google.com:19302"]},
+        {"urls": ["stun:stun2.l.google.com:19302"]}
+    ]
+}
 ctx = webrtc_streamer(
     key="webcam-control",
     mode=WebRtcMode.SENDRECV, # Pour envoyer et recevoir de la vidéo
-    rtc_configuration={ # Configuration standard pour éviter les blocages réseaux
-        "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
-    },
+    # Configuration standard pour éviter les blocages réseaux
+    rtc_configuration=rtc_configuration,
     media_stream_constraints={"video": True, "audio": False},
     async_processing=True
 )
